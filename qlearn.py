@@ -76,7 +76,8 @@ class Grid:
         self.setRewardTable(x_dim, y_dim)
 
     def setRewardTable(self, x_dim, y_dim):
-        """Helper method to set the reward_table attribute from the init method."""
+        """Helper method to set the reward_table attribute from the init method.
+        """
 
         self.reward_table = np.zeros(self.x_dim * self.y_dim)
         if self.manhattan_distance:
@@ -129,7 +130,8 @@ class Grid:
                 return current_state + self.x_dim
 
     def print(self):
-        """Pretty self explanatory"""
+        """Pretty self explanatory
+        """
 
         print("state_space:")
         for i in range(self.y_dim):
@@ -147,7 +149,8 @@ class Simulation:
     
     Honestly not going to go into attrs and methods; a sequence gets passed in, along with a simple action space (bet or no bet) and agent queries into the sequence via the next method with its actions to receive rewards. Also has a simple print.
     
-    Superceded by the SimulationPrime class which while flawed actually is a reasonable implementation of the q-learning paradigm since it gets passed a simulation environment where actions have consequences."""
+    Superceded by the SimulationPrime class which while flawed actually is a reasonable implementation of the q-learning paradigm since it gets passed a simulation environment where actions have consequences.
+    """
 
     def __init__(self, state_space = [0,1,2,3,4,5,6,7,8,9], action_space = [0,1], reward_num = 9):
         self.state_dim = len(state_space)
@@ -201,6 +204,9 @@ class SimulationPrime:
         - reward_table gets stored both here and in the env, which it really should just be here. Possible fixes are to allow users to set a reward structure somehow, and give default behavior for some environments? Or commit to the reward table being stored in the environment and just have rewards returned from there. At that point does this class even really need to exist? 
 
         - step function is coupled to the Grid environment class which is stupid. Probably the environment and sim classes should all be one class, thinking that more and more as I type.
+    
+    #TODO find some way to input custom starting states
+    #TODO decouple the step function from the very specific grid environment I've jerry-rigged together
     """
     def __init__(self, env):
         self.env = env
@@ -208,12 +214,15 @@ class SimulationPrime:
         self.action_space = env.action_space
         self.state_dim = len(env.state_space)
         self.action_dim = len(env.action_space)
-        #TODO find some way to input custom starting states
         self.current_state = 0
         self.done = False
         self.reward_table = env.reward_table
 
     def step(self, action, debug = False):
+        """Takes an agent generated action and returns the next state, associated reward and a flag for whether the episode is over.
+
+        Horrendously coupled with the Grid environment class, leading to some gross custom if-else logic. Fix this.
+        """
         next_state = self.env.getNextState(action, self.current_state)
         if next_state == False:
             self.done = True
@@ -242,6 +251,33 @@ class SimulationPrime:
         print("reward_table is " + str(self.reward_table) + ".")        
 
 class Agent:
+    """Simple agent class for q learning.
+    
+    Makes a little agent that can step through its environment and learn a q-table. Relies on the Simulation (or SimulationPrime) class when actually moving through the sim.
+    
+    Attributes
+    ----------
+    state_dim : int
+        size of the state space
+    action_dim : int
+        size of the action space. actions are taken by randomly choosing an int from the set [0,...,action_dim]
+    learning_rate : float
+        rate at which the agent should learn, see any text on q learning for how this weights the adjustment to our q values
+    gamma : float
+        future reward discount, same note as learning_rate
+    p_exploration : float
+        rate at which the agent decides to explore (pick a random action) vs. exploit (pick the action which its q_table says is the best) when stepping through a simulation environment
+    q_table : arr
+        array of q-values, which correspond to expected rewards from taking a particular action while in a particular state
+        
+    Methods
+    -------
+    take_action(current_state)
+        returns an action (int) based on the current state the agent is in
+    update(current_state, action, next_state)
+        updates the q_table of the agent
+    """
+    
     def __init__(self, state_dim = 10, action_dim = 2, learning_rate = .1, gamma = .8, p_exploration = .3):
         #initialize q table
         self.q_table = np.zeros((state_dim, action_dim))
@@ -252,6 +288,9 @@ class Agent:
         self.p_exploration = 1
 
     def take_action(self, current_state):
+        """Method for generating an action based on the current state
+        """
+
         if np.random.uniform(0,1) < self.p_exploration:
             action = np.random.choice([0,1,2,3])
         else:
@@ -259,6 +298,9 @@ class Agent:
         return action
 
     def update(self, current_state, action, next_state, reward):
+        """Method for updating the q_table of the agent based on feedback from the Simulation or SimulationPrime class. Ignore ugly prints
+        """
+
         # print("Current state is " + str(current_state))
         # print("Action is " + str(action))
         # print("Next state is " + str(next_state))
@@ -276,6 +318,11 @@ class Agent:
         print("q_table is:\n" + str(self.q_table) + ".")
 
 def runSequenceSim():
+    """A really basic loop that runs the sequence rl attempt. 
+    
+    We do get actual results out of this (as in, the q-table of the trained agent reflects the pattern we generated in the sequence if gamma is set to 0) but as detailed in the docstring of the Simulation class, this is a wrongheaded approach to the problem.
+    """
+
     a = Agent(10,2)
     sim = Simulation()
     num_episodes = 100
@@ -293,6 +340,18 @@ def runSequenceSim():
     return a
 
 def runGridSim(grid_dimensions = [10,10], num_episodes = 100000):
+    """Runs a simulation of an agent stepping through a grid.
+    
+    The agent starts each episode at the left top corner and "wants" to get to the bottom right where it can enjoy a tasty treat of +1 reward. The p_exploration of the agent is reduced linearly from 1 to 0 as the loop runs so the agent relies more and more on its q_table in later episodes.
+    
+    Parameters
+    ----------
+    grid_dimensions : array
+        dimensions of the grid that we want our agent to play on
+    num_episodes : int
+        number of episodes to run the simulation
+    """
+
     g = Grid(grid_dimensions[0],grid_dimensions[1], manhattan_distance = False)
     a = Agent(state_dim = g.state_dim, action_dim = g.action_dim, p_exploration = 1,
      learning_rate = .5, gamma = .8)
@@ -310,6 +369,11 @@ def runGridSim(grid_dimensions = [10,10], num_episodes = 100000):
     return a
 
 def showActionMatrices(agent):
+    """Generates a matplotlib image of the rewards that a grid agent is expecting on each tile, visualized as a heat map.
+
+    #TODO fix logic for the matrices so non-square matrices are allowed. or don't, that would require some rewriting of the agent class that would couple it with grids. ugh
+    """
+
     mat = agent.q_table
     x_dim = int(np.sqrt(len(mat)))
     left_mat = [[mat[i + x_dim*n][0] for i in range(x_dim)] for n in range(x_dim)]
@@ -348,12 +412,28 @@ def showActionMatrices(agent):
 
     plt.show()
 
-# for i in range(10):
-#     trained_grid_agent = runGridSim(grid_dimensions = [3,3], num_episodes = i * 1000)
-#     plt.plot()
-#     plt.matshow(trained_grid_agent.q_table)
-#     plt.savefig("figs/" + str(i * 10000) + "runs.png")
+def outputQTables(num_agents, grid_dimensions, episode_step_size):
+    """A method that runs several simulation loops of varying size and outputs the trained agent q tables to the figs folder.
 
-trained_grid_agent = runGridSim(grid_dimensions = [6,6], num_episodes = 100000)
-showActionMatrices(trained_grid_agent)
+    Parameters
+    ----------
+    num_agents : int
+        number of agents to train
+    grid_dimensions : array
+        size of the grid on which to train the agents
+    episode_step_size : int
+        the step size by which we increase the number of episodes that we train each agent on
+    """
 
+    for i in range(num_agents):
+        trained_grid_agent = runGridSim(grid_dimensions = grid_dimensions, num_episodes = i * episode_step_size)
+        plt.plot()
+        plt.matshow(trained_grid_agent.q_table)
+        plt.savefig("figs/" + str(i * 10000) + "runs.png")
+
+def main():
+    trained_grid_agent = runGridSim(grid_dimensions = [7,7], num_episodes = 100000)
+    showActionMatrices(trained_grid_agent)
+
+if __name__ == "__main__":
+    main()
