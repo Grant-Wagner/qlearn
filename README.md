@@ -7,15 +7,17 @@ I was still interested in the whole Q learning thing though, so I moved on from 
 
 Future Possibilities:
 
-|    (i) SD developed a similar agent that avoids hazards on a grid. This got me thinking about whether two agents that have learned different lessons about similar environments could be combined - i.e. if one agent reacts to hazards based on a "sensor" that it has and another seeks rewards, can we reliably merge those two behaviors into one "super agent"? The answer is certainly yes and will be fun to code up if/when I have the motivation. Sticking points are appropriately weighting the two behaviors (read q-tables) and having a good understanding of the distribution of possible q-values in each table.
+<ul>
+(i) SD developed a similar agent that avoids hazards on a grid. This got me thinking about whether two agents that have learned different lessons about similar environments could be combined - i.e. if one agent reacts to hazards based on a "sensor" that it has and another seeks rewards, can we reliably merge those two behaviors into one "super agent"? The answer is certainly yes and will be fun to code up if/when I have the motivation. Sticking points are appropriately weighting the two behaviors (read q-tables) and having a good understanding of the distribution of possible q-values in each table.
 
-|    (ii) Introduce uncertainty into the simulation. With uncertain rewards, punishments or states we need to move up from a simple table to a DQN (maybe). Haven't thought this one through entirely but the key idea is to equip the agent with a sensor that outputs probabilities of hazards or rewards in each direction rather than certain hazards and rewards.
+(ii) Introduce uncertainty into the simulation. With uncertain rewards, punishments or states we need to move up from a simple table to a DQN (maybe). Haven't thought this one through entirely but the key idea is to equip the agent with a sensor that outputs probabilities of hazards or rewards in each direction rather than certain hazards and rewards.
 
-|    (iii) Combining the ideas from (i) and (ii), how could we reliably combine DQNs?
+(iii) Combining the ideas from (i) and (ii), how could we reliably combine DQNs?
 
-|    (iv) For some reason my algebra keeps on coming out wrong and I really feel that the expected reward of going right when directly to the left of the goal tile should be 1 + gamma. Simulations show that it is just gamma. Fix the bug in the code or brain that is causing this and do some more investigation of why the expected rewards look like polynomials in gamma.
+(iv) For some reason my algebra keeps on coming out wrong and I really feel that the expected reward of going right when directly to the left of the goal tile should be 1 + gamma. Simulations show that it is just gamma. Fix the bug in the code or brain that is causing this and do some more investigation of why the expected rewards look like polynomials in gamma.
 
-|    (v) Fix venv.
+(v) Fix venv.
+</ul>
 
 Things Learned:
 
