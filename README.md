@@ -7,20 +7,22 @@ I was still interested in the whole Q learning thing though, so I moved on from 
 
 Future Possibilities:
 
-    (i) SD developed a similar agent that avoids hazards on a grid. This got me thinking about whether two agents that have learned different lessons about similar environments could be combined - i.e. if one agent reacts to hazards based on a "sensor" that it has and another seeks rewards, can we reliably merge those two behaviors into one "super agent"? The answer is certainly yes and will be fun to code up if/when I have the motivation. Sticking points are appropriately weighting the two behaviors (read q-tables) and having a good understanding of the distribution of possible q-values in each table.
+|    (i) SD developed a similar agent that avoids hazards on a grid. This got me thinking about whether two agents that have learned different lessons about similar environments could be combined - i.e. if one agent reacts to hazards based on a "sensor" that it has and another seeks rewards, can we reliably merge those two behaviors into one "super agent"? The answer is certainly yes and will be fun to code up if/when I have the motivation. Sticking points are appropriately weighting the two behaviors (read q-tables) and having a good understanding of the distribution of possible q-values in each table.
 
-    (ii) Introduce uncertainty into the simulation. With uncertain rewards, punishments or states we need to move up from a simple table to a DQN (maybe). Haven't thought this one through entirely but the key idea is to equip the agent with a sensor that outputs probabilities of hazards or rewards in each direction rather than certain hazards and rewards.
+|    (ii) Introduce uncertainty into the simulation. With uncertain rewards, punishments or states we need to move up from a simple table to a DQN (maybe). Haven't thought this one through entirely but the key idea is to equip the agent with a sensor that outputs probabilities of hazards or rewards in each direction rather than certain hazards and rewards.
 
-    (iii) Combining the ideas from (i) and (ii), how could we reliably combine DQNs?
+|    (iii) Combining the ideas from (i) and (ii), how could we reliably combine DQNs?
 
-    (iv) For some reason my algebra keeps on coming out wrong and I really feel that the expected reward of going right when directly to the left of the goal tile should be 1 + gamma. Simulations show that it is just gamma. Fix the bug in the code or brain that is causing this and do some more investigation of why the expected rewards look like polynomials in gamma.
+|    (iv) For some reason my algebra keeps on coming out wrong and I really feel that the expected reward of going right when directly to the left of the goal tile should be 1 + gamma. Simulations show that it is just gamma. Fix the bug in the code or brain that is causing this and do some more investigation of why the expected rewards look like polynomials in gamma.
+
+|    (v) Fix venv.
 
 Things Learned:
 
-\t(i) There are better libraries and APIs that already implement GridWorld that I could have used. It was fun writing my own classes but might be worth doing more preliminary research and documentation reading in the future since I am clearly bad at the architecture portion of this stuff.
+|    (i) There are better libraries and APIs that already implement GridWorld that I could have used. It was fun writing my own classes but might be worth doing more preliminary research and documentation reading in the future since I am clearly bad at the architecture portion of this stuff.
 
-\t(ii) There is a super cool betting API from betfair that could generate huge training sets for some future project on time series data.
+|    (ii) There is a super cool betting API from betfair that could generate huge training sets for some future project on time series data.
 
-    (iii) Mentioned above, the q-values follow a somewhat predictable expressions as polynomials in gamma. Probably some actual mathematics could reveal a neat pattern and closed form solutions for problems in GridWorld.
+|    (iii) Mentioned above, the q-values follow a somewhat predictable expressions as polynomials in gamma. Probably some actual mathematics could reveal a neat pattern and closed form solutions for problems in GridWorld.
 
-    (iv) Good matplotlib code snippets in here for future Grant.
+|    (iv) Good matplotlib code snippets in here for future Grant.
