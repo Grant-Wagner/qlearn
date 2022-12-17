@@ -17,9 +17,9 @@ Future Possibilities:
 
 Things Learned:
 
-    (i) There are better libraries and APIs that already implement GridWorld that I could have used. It was fun writing my own classes but might be worth doing more preliminary research and documentation reading in the future since I am clearly bad at the architecture portion of this stuff.
+\t(i) There are better libraries and APIs that already implement GridWorld that I could have used. It was fun writing my own classes but might be worth doing more preliminary research and documentation reading in the future since I am clearly bad at the architecture portion of this stuff.
 
-    (ii) There is a super cool betting API from betfair that could generate huge training sets for some future project on time series data.
+\t(ii) There is a super cool betting API from betfair that could generate huge training sets for some future project on time series data.
 
     (iii) Mentioned above, the q-values follow a somewhat predictable expressions as polynomials in gamma. Probably some actual mathematics could reveal a neat pattern and closed form solutions for problems in GridWorld.
 
